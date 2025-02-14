@@ -20,31 +20,36 @@ class WorkoutVM: ObservableObject, WorkoutTimerProtocol
 {
     @Published var timeRemaining: Int = 0
     @Published var isRunning: Bool = false
+    @Published var currentIntervalIndex: Int = 0
     
     private var timer: Timer?
-    private var intervals: [Interval] = []
-    private var currentIntervalIndex = 0
+    private let workout: WorkoutProtocol
+    
+    var currentInterval: Interval?
+    {
+        guard currentIntervalIndex < workout.intervals.count else { return nil }
+        return workout.intervals[currentIntervalIndex]
+    }
     
     init(workout: WorkoutProtocol)
     {
-        self.intervals = workout.intervals
+        self.workout = workout
     }
     
     func startWorkout() {
-        guard !intervals.isEmpty else { return }
+        guard !workout.intervals.isEmpty else { return }
         currentIntervalIndex = 0
         startInterval()
     }
     
     private func startInterval()
     {
-        guard currentIntervalIndex < intervals.count else
+        guard let interval = currentInterval else
         {
             stopWorkout()
             return
         }
         
-        let interval = intervals[currentIntervalIndex]
         timeRemaining = interval.duration
         isRunning = true
         
