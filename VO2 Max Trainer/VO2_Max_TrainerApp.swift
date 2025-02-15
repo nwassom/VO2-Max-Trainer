@@ -15,7 +15,7 @@ struct VO2_Max_TrainerApp: App
     {
         WindowGroup
         {
-            TimerButton()
+            Home()
         }
     }
 }

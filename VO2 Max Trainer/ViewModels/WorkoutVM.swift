@@ -82,6 +82,21 @@ class WorkoutVM: ObservableObject, WorkoutTimerProtocol
         timer?.invalidate()
         isRunning = false
     }
+    
+    func intervalCount() -> Int
+    {
+        return workout.intervals.count
+    }
+    
+    func displaySets() -> Bool
+    {
+        return workout.displaySets
+    }
+    
+    func getName() -> String
+    {
+        return workout.name
+    }
 }
 
 

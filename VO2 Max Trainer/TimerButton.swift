@@ -17,8 +17,13 @@ import SwiftUI
  */
 struct TimerButton : View
 {
-    @StateObject private var viewModel = WorkoutVM(workout: Scandanavian_4x4())
-    @State private var displayProgress: Double = 0.0;
+    @ObservedObject private var viewModel: WorkoutVM
+    @State private var displayProgress: Double = 0.0
+    
+    init(viewModel: WorkoutVM)
+    {
+        self.viewModel = viewModel
+    }
     
     var body: some View
     {
@@ -35,18 +40,33 @@ struct TimerButton : View
                     .frame(width: 4, height: 15)
                     .offset(y: -135)
                     .rotationEffect(angle)
-                    .foregroundColor(filled ? .blue : .blue.opacity(0.3))
+                    .foregroundColor(filled ? Color(red: 0, green: 1, blue: 1) : Color.blue.opacity(0.3)) // Nuka-Cola Blue
+                    .shadow(color: Color.cyan.opacity(0.8), radius: 10) // Outer glow effect
+
             }
             
             Circle()
-                .fill(viewModel.isRunning ? Color.blue.opacity(0.2) : Color.green.opacity(0.2))
-                .frame(width: 300, height: 300)
+                .fill(viewModel.isRunning ? Color.blue.opacity(0.3) : Color.green.opacity(0.3))  // Adaptive colors
+                .frame(width: 300, height: 300, alignment: .center)
                 .overlay(
-                    Text(viewModel.isRunning ? "\(formattedTime(viewModel.timeRemaining))" : "Start")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(.white)
+                    Text(viewModel.isRunning ? "\(formattedTime(viewModel.timeRemaining))" : "Start\n\(viewModel.getName())")
+                        .font(.system(size: 36, weight: .medium))  // Minimalistic font style
+                        .foregroundColor(.white)  // Clean white text
+                        .shadow(color: Color.black.opacity(0.5), radius: 8)  // Subtle shadow to enhance visibility
                 )
+                .overlay(
+                    Circle()  // Add a subtle border
+                        .stroke(viewModel.isRunning ? Color.blue : Color.green, lineWidth: 4)
+                        .opacity(0.5)
+                )
+                .padding()  // Spacing from surrounding elements
+                .background(
+                    (Color.black.opacity(0.05) // Light background effect for dark mode
+                        .cornerRadius(300)) // Circular background effect
+                )
+                .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 5) // Button shadow
+                .scaleEffect(viewModel.isRunning ? 1.05 : 1)  // Subtle scale effect when running
+                .animation(.easeInOut(duration: 0.2), value: viewModel.isRunning)  // Smooth animation
                 .onTapGesture
                 {
                     if !viewModel.isRunning
@@ -54,7 +74,7 @@ struct TimerButton : View
                         viewModel.startWorkout()
                     }
                 }
-        }
+            }
         .onChange(of: viewModel.timeRemaining, initial: true)
         {
             _,_ in
@@ -98,6 +118,7 @@ struct TimerButtonView_Previews: PreviewProvider
 {
     static var previews: some View
     {
-            TimerButton()
+        var workout = WorkoutVM(workout: Scandanavian_4x4())
+        TimerButton(viewModel: workout)
     }
 }

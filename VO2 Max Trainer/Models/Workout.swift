@@ -11,4 +11,5 @@ protocol WorkoutProtocol
 {
     var name: String {get}
     var intervals: [Interval] {get}
+    var displaySets: Bool {get}
 }

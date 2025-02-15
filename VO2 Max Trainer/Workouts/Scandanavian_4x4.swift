@@ -9,7 +9,7 @@ import Foundation
 
 struct Scandanavian_4x4: WorkoutProtocol
 {
-    let name = "Scandanavian 4x4"
+    let name: String = "Scandanavian 4x4"
     let intervals: [Interval] =
     [
         Interval(duration: 240, type: .run),
@@ -21,4 +21,5 @@ struct Scandanavian_4x4: WorkoutProtocol
         Interval(duration: 240, type: .run),
         Interval(duration: 180, type: .rest)
     ]
+    let displaySets: Bool = true
 }
